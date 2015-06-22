@@ -1,0 +1,9 @@
+.app {
+    > h1 {
+        color: darkblue;
+
+        .plus {
+            color: orange;
+        }
+    }
+}
