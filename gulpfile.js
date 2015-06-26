@@ -101,23 +101,34 @@ function initBundler() {
     });
 
     w = watchify(b)
+        .on('error', handleError)
         .on('update', function() { bundleApp(b); })
         .on('log', gutil.log);
 
     p = parcelify(b, {
             watch: true,
             bundles: {
-                style: '.tmp/css/app.css'
+                style: path.join(__dirname, '.tmp/css/app.css')
             }
         })
         .on('done', function() {
             console.log('parcelify done'); })
+
         .on('error', function(err) {
-            console.log('parcelify error', err); })
+            console.log('parcelify error', err);
+            this.emit('end');
+        })
+
         .on('packageCreated', function(package, isMain) {
-            console.log('parcelify package created', package, isMain); })
+            // console.log('parcelify package created', package, isMain);
+         })
+
         .on('assetUpdated', function(eventType, asset) {
-            reload();
+            // inject the css without reloading the page.
+            gulp.src('.tmp/css/app.css')
+                .pipe($.plumber())
+                .pipe(reload({stream: true}));
+
             console.log('parcelify assetUpdated', eventType, asset); });
 
     libs.forEach(function(lib, index) {
