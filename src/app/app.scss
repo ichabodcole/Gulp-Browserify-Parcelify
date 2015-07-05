@@ -1,9 +1,11 @@
+@import 'base/colors';
+
 .app {
     > h1 {
-        color: darkblue;
+        color: $dark-blue;
 
         .plus {
-            color: orange;
+            color: $orange;
         }
     }
 }

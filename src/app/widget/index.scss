@@ -1,11 +1,24 @@
-$light-gray: #eee;
-$med-gray: #aaa;
-$black: #000;
+@import 'base/colors';
 
 .widget {
-    padding: 20px;
-    border: 1px solid $med-gray;
+    $arrow-red: #f00;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background: $light-gray;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid $med-gray;
     box-shadow: 2px 2px 5px $black;
     width: 300px;
+
+    &:hover {
+        background: lighten($med-gray, 10%);
+    }
+
+    &__arrow {
+        color: $arrow-red;
+    }
 }
+

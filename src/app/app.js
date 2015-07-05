@@ -1,4 +1,3 @@
-console.log('App');
 var React = require('react');
 var Widget = require('./widget');
 
