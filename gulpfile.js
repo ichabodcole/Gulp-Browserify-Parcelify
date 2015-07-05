@@ -48,7 +48,7 @@ var libs = [
 **************************************/
 
 gulp.task('default', function(done) {
-    sequence('clean', ['copy', 'sass', 'scripts', 'watch'], done);
+    sequence('clean', ['copy', 'sass', 'scripts'], 'watch', done);
 });
 
 gulp.task('serve', ['default'], bSync);
@@ -85,7 +85,8 @@ function jshint() {
 gulp.task('bundle', ['jshint'], initBundler);
 
 function initBundler() {
-    var b, w, p;
+    var b, w, p
+        , parcelifyDest = '.tmp/css/app.css';
 
     b = browserify({
         cache: {},
@@ -108,8 +109,16 @@ function initBundler() {
     p = parcelify(b, {
             watch: true,
             bundles: {
-                style: path.join(__dirname, '.tmp/css/app.css')
-            }
+                style: path.join(__dirname, parcelifyDest)
+            },
+            // if passing options is not necessary this transform should be defined in the package.json like so `"transforms": ["sass-css-stream"]`
+            appTransforms : [
+                // need an wrapper function to pass options to the stream transformer
+                function sassTransformer( file ) {
+                    return sassCssStream( file, { includePaths : [ path.resolve( __dirname, 'src/sass' ) ] } );
+                }
+            ],
+            appTransformDirs: ['./']
         })
         .on('done', function() {
             console.log('parcelify done'); })
@@ -123,12 +132,17 @@ function initBundler() {
             // console.log('parcelify package created', package, isMain);
          })
 
+        .on('bundleWritten', function() {
+            console.log('bundle written');
+            return gulp.src(parcelifyDest)
+                .on('error', handleError)
+                .pipe($.autoprefixer())
+                .pipe(gulp.dest(paths.sass.dest))
+                .pipe(reload({stream: true}));
+        })
+
         .on('assetUpdated', function(eventType, asset) {
             // inject the css without reloading the page.
-            gulp.src('.tmp/css/app.css')
-                .pipe($.plumber())
-                .pipe(reload({stream: true}));
-
             console.log('parcelify assetUpdated', eventType, asset); });
 
     libs.forEach(function(lib, index) {
@@ -276,8 +290,8 @@ gulp.task('watch', watch);
 
 function watch() {
     gulp.watch(paths.html.entry, ['copy']);
-    gulp.watch(paths.sass.src, ['sass']);
-    gulp.watch(['.tmp/**/*.css'], reload);
+    gulp.watch(paths.sass.src[0], ['sass']);
+    gulp.watch(paths.sass.src[1], ['sassLint']);
 }
 
 
