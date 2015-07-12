@@ -1,0 +1,28 @@
+// Bring in global, common or higher level defined variables / mixins etc.
+// Generally limit the amount of cascading styles though, unless very basic.
+@import 'base/colors';
+
+.gbp-widget2 {
+    // A locally defined variable, scoped to the widget
+    $arrow-green: #0f0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: darken($dark-blue, 10%);
+    border: 1px dashed $dark-gray;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px $black;
+    color: $white;
+
+    &:hover {
+        background: $dark-gray;
+        border: 1px dashed $dark-blue;
+    }
+
+    &__arrow {
+        color: $arrow-green;
+    }
+}
+

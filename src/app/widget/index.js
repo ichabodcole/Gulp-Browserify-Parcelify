@@ -4,9 +4,9 @@ var Widget = React.createClass({
     render: ()=> {
         return(
             /* jshint ignore:start */
-            <div className="widget">
+            <div className="gbp-widget">
                 <div>My Widget</div>
-                <div className="widget__arrow">--&gt;</div>
+                <div className="gbp-widget__arrow">--&gt;</div>
             </div>
             /* jshint ignore:end */
         );

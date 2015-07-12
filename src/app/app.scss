@@ -1,11 +1,16 @@
 @import 'base/colors';
 
-.app {
-    > h1 {
-        color: $dark-blue;
+// gbp is our apps css namespace to avoid any third party collision.
 
-        .plus {
-            color: $orange;
+.gbp-app {
+    // BEM syntax
+    &__widgets {
+        width: 300px;
+
+        // Owl blowing it's brains outs.
+        // Or when any first level element follows any other first level element element put use a top margin of 10px.
+        > * + * {
+            margin-top: 10px;
         }
     }
 }

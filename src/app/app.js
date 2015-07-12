@@ -1,13 +1,18 @@
 var React = require('react');
 var Widget = require('./widget');
+var Widget2 = require('./widget2');
+var Header = require('./header');
 
 var App = React.createClass({
     render: ()=> {
         return(
             /* jshint ignore:start */
-            <div className="app">
-            <h1>Gulp <span className="plus">+</span> Browserify <span className="plus">+</span> Parceliy</h1>
-                <Widget />
+            <div className="gbp-app">
+                <Header />
+                <div className="gbp-app__widgets">
+                    <Widget />
+                    <Widget2 />
+                </div>
             </div>
             /* jshint ignore:end */
         );
