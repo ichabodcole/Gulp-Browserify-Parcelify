@@ -21,6 +21,8 @@ var $ = require('gulp-load-plugins')({
     }
 });
 
+var doFullReload = false;
+
 var libs = [
     { require: 'react' }
 ]
@@ -99,6 +101,9 @@ function initBundler() {
         noparse: libs.map(function(lib, index) {
             return (lib.expose || lib.require);
         })
+    })
+    .on('bundle', function() {
+        doFullReload = true;
     });
 
     w = watchify(b)
@@ -138,7 +143,12 @@ function initBundler() {
                 .on('error', handleError)
                 .pipe($.autoprefixer())
                 .pipe(gulp.dest(paths.sass.dest))
-                .pipe(reload({stream: true}));
+                // do a full reload if the javascript was bundled
+                .pipe($.if(doFullReload, reload({stream: true, once: true})))
+                // use css injection if only the sass has changed and not the javascript
+                .pipe($.if(!doFullReload, reload({stream: true})));
+
+            doFullReload = false;
         })
 
         .on('assetUpdated', function(eventType, asset) {
@@ -160,8 +170,7 @@ function bundleApp(bundler) {
         .pipe(buffer())
         .pipe($.sourcemaps.init({loadMaps: true}))
         .pipe($.sourcemaps.write('./')) // write .map file
-        .pipe(gulp.dest(paths.js.dest))
-        .pipe(reload({stream: true, once: true}));
+        .pipe(gulp.dest(paths.js.dest));
 }
 
 
